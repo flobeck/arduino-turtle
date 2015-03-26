@@ -16,17 +16,18 @@
 class Lsys
 {
 public:
-        Lsys(String axiom, String left, String right[], int rules);
+        Lsys(String axiom, String vars, String rules, int r);
 
         String _axiom;
-        String _left;
-        String _right[];
+        String _vars;
+        String _rules;
         String _res;
-        int _rules;
+        int _r;
 
 
+        String getRule(String r, String var);
         String lsysparse(String axiom);
-        void generate(int depht);
+        void parse(int depht);
 
 };
 

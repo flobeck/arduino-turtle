@@ -1,41 +1,46 @@
 #include <string.h>
 #include "U8glib.h"
 #include <turtle.h>
+#include <lsys.h>
 
 U8GLIB_SSD1306_128X64 u8g(U8G_I2C_OPT_NONE | U8G_I2C_OPT_DEV_0);
-Turtle t = Turtle(100, 60, PI);
 
-int init_x = t._x;
-int init_y = t._y;
-float init_angle = t._angle;
+// initialize Turtle
+int init_x = 100;
+int init_y = 60;
+float init_angle = PI; 
 
-char instruction[] =
-  "F+F-F-F+F+F+F-F-F+F-F+F-F-F+F-F+F-F-F+F+F+F-F-F+F+"
-  "F+F-F-F+F+F+F-F-F+F-F+F-F-F+F-F+F-F-F+F+F+F-F-F+F-"
-  "F+F-F-F+F+F+F-F-F+F-F+F-F-F+F-F+F-F-F+F+F+F-F-F+F-"
-  "F+F-F-F+F+F+F-F-F+F-F+F-F-F+F-F+F-F-F+F+F+F-F-F+F+"
-  "F+F-F-F+F+F+F-F-F+F-F+F-F-F+F-F+F-F-F+F+F+F-F-F+F";
+Turtle t = Turtle(init_x, init_y, init_angle);
+
+// initialize Lindenmayer System
+String axiom = "F";
+String vars  = "F";
+String rules = "F:F+F-F-F+F";  //rules must be in this form
+
+Lsys l = Lsys(axiom, vars, rules, 1);
 
 
-void setup(void) {}
+
+void setup(void) {
+  Serial.begin(9600);
+  l.parse(3);
+}  
 
 
 void draw(void) {
-  for (int i = 0; i < 10; i++) {
+  for (int i = 0; i < 10; i++) {   
     t.set(init_x, init_y, init_angle);
-    //t.run(koch_curve);
 
-    for (int i = 0; i < strlen(instruction); i++) {
-      if (instruction[i] == 'F'){
+    for (int i = 0; i < l._res.length(); i++) {
+      if (l._res.charAt(i) == 'F') {
         t.forward(3);
         u8g.drawLine(t._xold, t._yold, t._x, t._y);
       }
-      else if (instruction[i] == '+')
+      else if (l._res.charAt(i) == '+')
         t.turn(PI / 2);
-      else if (instruction[i] == '-')
+      else if (l._res.charAt(i) == '-')
         t.turn(-PI / 2);
     }
-
   }
 }
 
