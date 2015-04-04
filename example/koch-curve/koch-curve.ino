@@ -26,12 +26,12 @@ void setup(void) {
   l.parse(3);
 }  
 
+int go = 0;
 
 void draw(void) {
-  for (int i = 0; i < 10; i++) {   
     t.set(init_x, init_y, init_angle);
-
-    for (int i = 0; i < l._res.length(); i++) {
+    
+    for (int i = 0; i < go; i++) {
       if (l._res.charAt(i) == 'F') {
         t.forward(3);
         u8g.drawLine(t._xold, t._yold, t._x, t._y);
@@ -40,8 +40,9 @@ void draw(void) {
         t.turn(PI / 2);
       else if (l._res.charAt(i) == '-')
         t.turn(-PI / 2);
-    }
-  }
+   }
+
+  go = (go + 1) % l._res.length();
 }
 
 
@@ -50,7 +51,7 @@ void loop(void) {
   do {
     draw();
   } while ( u8g.nextPage() );
-  delay(5);
+  delay(0);
 }
 
 
